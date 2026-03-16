@@ -1,0 +1,117 @@
+using System.Net.WebSockets;
+using System.Runtime.CompilerServices;
+
+namespace ConsoleApp1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Vipechka vipechka = new Vipechka(100, 1);
+            vipechka.Print();
+            Sochnik sochnik = new Sochnik(100, 1, 150);
+            sochnik.Print();
+            Vipechka vipechka2 = new Sochnik(100, 1, 50);
+            vipechka2.Print();
+            Vipechka[] vipechkas = new Vipechka[] { vipechka, sochnik };
+            Vipechka hidesochnik = new Sochnik(100, 1, 50);
+            Console.WriteLine(hidesochnik as Vipechka);
+            Console.WriteLine();
+            //////
+            Rogalic true_rogalic = new Rogalic(100);
+            Bakery hide_rogalic = new Rogalic(100);
+            true_rogalic.Salty(); true_rogalic.Spicy(); true_rogalic.Sweet();
+            hide_rogalic.Salty(); hide_rogalic.Spicy(); hide_rogalic.Sweet();
+
+
+
+        }
+    }
+    /// <summary>
+    /// ////////////
+    /// </summary>
+    public class Vipechka
+    {
+        protected int _flour;
+        protected int _egg;
+
+
+        public Vipechka(int flour, int egg)
+        {
+            _flour = flour;
+            _egg = egg;
+
+        }
+        public void Time()
+        {
+            Console.WriteLine("1 hour");
+        }
+        public virtual void Weight()
+        {
+            Console.WriteLine(_egg + _flour);
+        }
+        public virtual void Print()
+        {
+            Console.WriteLine($"My vipechka: flour {_flour} egg {_egg}");
+        }
+
+    }
+    public class Sochnik : Vipechka
+    {
+        private int _shugar;
+        private int _solt;
+        public Sochnik(int flour, int egg, int shugar) : base(flour, egg)
+        {
+            _shugar = shugar;
+            _solt = 10;
+        }
+        public override void Weight()
+        {
+            Console.WriteLine(_egg + _flour + _shugar);
+        }
+        public override void Print()
+        {
+            Console.WriteLine($"My sochnik: flour {_flour} egg {_egg} shugar {_shugar}");
+        }
+    }
+    ///////////// new summary
+    public abstract class Bakery
+    {
+        private int _number;
+        public abstract string World { get;}
+
+        public Bakery (int number)
+        {
+            _number = number;
+        }
+        public void Salty()
+        {
+            Console.WriteLine("a litel salty");
+        }
+        public virtual void Spicy()
+        {
+            Console.WriteLine("a litel spicy");
+        }
+        public abstract void Sweet(); //absolutly sweeeet /////abstract если 100% будем переопределять
+    }
+    public class Rogalic : Bakery
+    {
+        public override string World => "Bye!";
+        public Rogalic(int number) : base(number) { }
+        public new void Salty()
+        {
+            Console.WriteLine("middle salty");
+        }
+        public new void Spicy()    //у скрытого рогалика будет вызываться первичный Spycy (new - штукатурка, override - бетон)
+        {
+            Console.WriteLine("no spicy");
+        }
+        public override void Sweet() //для abstract обязательно override
+        {
+            Console.WriteLine("absolutly sweeeet");
+        }
+
+
+    }
+
+}
