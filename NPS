@@ -1,0 +1,96 @@
+using Lab8.Blue;
+using System.Net.WebSockets;
+
+namespace Lab8
+{
+    public class Program
+    {
+        public static void Main()
+        {
+            Point[] points = new Point[]
+            {
+                new Point(1,23),
+                new Point(4,3),
+                new Point (5,6),
+                new Point(7,8),
+                new Point(8,9), 
+            };
+            BersercNPS Ruric = new BersercNPS(points);
+            Ruric.CurrectPosition.Print();
+            NPS simpleNPS = Ruric as NPS; //приведение бууу
+            simpleNPS.Move();
+            simpleNPS.CurrectPosition.Print();
+
+        }
+    }
+    public struct Point
+    {
+        private int _x;
+        private int _y;
+        public int x => _x;
+        public int y => _y;
+
+        public Point(int x, int y)
+        {
+            _x = x;
+            _y = y;
+        }
+        
+    }
+    public class NPS
+    {
+        private Point[] _route;
+        protected int _currectIndex;
+        public Point CurrectPosition => _route[_currectIndex];
+        protected int RouteLength => _route.Length;
+        public NPS(Point[] route)
+        {
+            _route = route;
+            _currectIndex = 0;
+        }
+        public virtual void Move()
+        {
+            _currectIndex++;
+            if (_currectIndex == _route.Length)
+            {
+                _currectIndex = 0;
+            }
+        }
+    }
+    public class ReverseNPS : NPS
+    {
+        public ReverseNPS(Point[] route) : base(route)
+        {
+        }
+        public override void Move()
+        {
+            _currectIndex--;
+            if (_currectIndex < 0)
+            {
+                _currectIndex = RouteLength - 1;
+            }
+        }
+    }
+    public class BersercNPS : NPS
+    {
+        public BersercNPS(Point[] route) : base(route)
+        {
+        }
+        public override void Move()   // new - перекрытие , а когда overridе наследник приведенный к предку будет вести себя как был рождён
+        {
+            base.Move(); // вызов любого родительского метода
+            base.Move();
+        }
+    }
+    public class QuestNPS : NPS
+    {
+        private readonly string _questText;
+        public string QuestText => _questText;
+        public QuestNPS(Point[] route, string text) : base(route)
+        {
+            _questText = text;
+        }
+
+    }
+
+}
