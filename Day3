@@ -1,0 +1,27 @@
+namespace ConsoleApp4
+{
+    
+    public class Example
+    {
+        private string _word;
+        private int _number;
+        private bool _isinValid;
+        public Example(string word="Unicorn", int number=-1, bool isValid = true)
+        {
+            _isinValid = isValid;
+            _word=word;
+            _number = number;
+        }
+    }
+    
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Example e1=new Example("aaa",111,false);
+            Example e2 = new Example("aaa", 111);
+            Example e3 = new Example("aaa");
+            Example e4 = new Example();
+        }
+    }
+}
