@@ -1,0 +1,23 @@
+public class Program
+{
+    public static void Main()
+    {
+        //Sum,Count,Min/Max
+        int[] numbers = { 1, 2, 3, 4};
+
+        int result = numbers.Sum(x => x%2);
+
+        string[] words = { "hello", "my", "friends" };
+        result = words.Sum(x => x.Length);
+        result = words.Count(x=> x.Length%2==0);
+
+        //Any,All
+        bool f1 = words.Any(x => x.Length % 3 == 0);
+        bool f2 = numbers.All(x => x > 0);
+
+        //Select,Where, Distinct, GroupBy
+        int[] wordsLength = words.Select(x=> x.Length).ToArray();  //преобразует
+        string[] longWords= words.Where(x=>x.Length>2).ToArray();  //фильтр
+        
+        //char.IsDigit(x)
+    }
