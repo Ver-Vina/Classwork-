@@ -1,0 +1,96 @@
+using System.Threading.Tasks;
+using System.Timers;
+using System.Xml.Linq;
+using System.Xml.Serialization;
+namespace Deserialized
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //объект для сериализация
+            Player p1 = new Player("Nimbus2000", 120);
+            p1.Add(5);
+            p1.Add(2);
+            p1.Add(5);
+            PlayerDTO p1DTO = new PlayerDTO(p1);
+            //создаём путь для файла
+            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string filePath = Path.Combine(folderPath, "player.xml");
+
+            //Создаём XML-сериалайзер
+            //- Класс должен иметь конструктор без параметров
+            //- Класс должен быть публичным
+            //- В классе все свойства должны быть публичными get и set
+            //Оригинальный объект => DTO object => отдать его в сериализатор 
+            // Десериализуем объект из файла => получаем ДТО объект => оригинальный объект
+
+            //Объект для сериализации
+            var serializer=new XmlSerializer(typeof(PlayerDTO));
+            using (var writer = new StreamWriter(filePath))
+            {
+                serializer.Serialize(writer, p1DTO);
+            }
+            // Десериализуем объект из файла => получаем ДТО объект => оригинальный объект
+            PlayerDTO p2DTO;
+            using (var reader = new StreamReader(filePath))
+            {
+                p2DTO= (PlayerDTO)serializer.Deserialize(reader);
+            }
+            Player p2 = new Player(p2DTO.Name, p2DTO.Time);
+            Console.WriteLine(p2.Name); Console.WriteLine(p2.Time);
+            if (ComparePlayers(p1,p2))
+            {
+                Console.WriteLine("Success");
+            }
+            else
+            {
+                Console.WriteLine("Noooooooooooo");
+            }
+        }
+        private static bool ComparePlayers(Player p1, Player p2)
+        {
+            if (p1.Name != p2.Name) return false;
+            if (p1.Time != p2.Time) return false;
+            return true;
+        }
+    }
+    public class Player
+    {
+        private string _name;
+        private int _timePlay;
+        private int[] _rating;
+        public string Name => _name;
+        public int Time => _timePlay;
+        public int[] Rating => _rating.ToArray();
+        public Player(string name, int time)
+        {
+            _name = name;
+            _timePlay = time;
+            _rating = new int[0];
+        }
+        public void Add(int stars)
+        {
+            Array.Resize(ref _rating, _rating.Length+1);
+            _rating[_rating.Length - 1] = stars;
+        }
+        public Player()
+        {
+           
+        }
+    }
+    public class PlayerDTO
+    {
+        public string Name {  get; set; }
+        public int Time { get; set; }
+        public int[] Rating { get; set;  }
+        public PlayerDTO() { }
+        public PlayerDTO(Player p1)
+        {
+            Name = p1.Name;
+            Time = p1.Time;
+            Rating = p1.Rating;
+        }
+    }
+
+}
